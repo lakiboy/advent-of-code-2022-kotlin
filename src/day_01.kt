@@ -1,8 +1,8 @@
 fun main() {
-    fun reduceItems(items: List<String>): List<Int> {
+    fun reduceLines(lines: List<String>): List<Int> {
         var index = 0
 
-        return items.fold(mutableListOf(0)) { list, line ->
+        return lines.fold(mutableListOf(0)) { list, line ->
             if (line.isBlank()) {
                 list.add(++index, 0)
             } else {
@@ -13,17 +13,17 @@ fun main() {
         }
     }
 
-    fun part1(input: List<String>) = reduceItems(input).max()
+    fun puzzle1(input: List<String>) = reduceLines(input).max()
 
-    fun part2(input: List<String>) = reduceItems(input)
+    fun puzzle2(input: List<String>) = reduceLines(input)
         .sortedDescending()
         .take(3)
         .sum()
 
     val testInput = readInput("day_01_input_test")
-    check(part1(testInput) == 24000)
+    check(puzzle1(testInput) == 24000)
 
     val input = readInput("day_01_input")
-    part1(input).println()
-    part2(input).println()
+    puzzle1(input).println()
+    puzzle2(input).println()
 }
