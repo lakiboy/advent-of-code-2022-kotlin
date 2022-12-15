@@ -1,4 +1,4 @@
-// In-effective, but single expression :)
+// Ineffective, but single expression :)
 private fun puzzle(input: String, len: Int) = (0 until input.length - len)
     .first { index -> input.substring(index, index + len).toSet().size == len } + len
 
