@@ -9,24 +9,16 @@ private fun TreeCoords.left() = Pair(first, second - 1)
 private fun TreeCoords.right() = Pair(first, second + 1)
 
 private class TreeGrid private constructor(private val trees: Trees) {
-    private val size = trees.size
-
-    private val alwaysVisible = size * 4 - 4
-
-    private val lastIndex = size - 1
-
-    private val range = 1 until lastIndex
-
-    private val fullRange = 0 until size
+    private val lastIndex = trees.size - 1
 
     val visibleCount
-        get() = range.fold(alwaysVisible) { acc, row ->
-            acc + range.count { col -> Pair(row, col).isVisible }
+        get() = (1 until lastIndex).fold(trees.size * 4 - 4) { acc, row ->
+            acc + (1 until lastIndex).count { col -> Pair(row, col).isVisible }
         }
 
     val scenicScore
-        get() = fullRange.maxOf { row ->
-            fullRange.maxOf { col -> Pair(row, col).visibleTrees }
+        get() = trees.indices.maxOf { row ->
+            trees.indices.maxOf { col -> Pair(row, col).visibleTrees }
         }
 
     private val TreeCoords.isEdge get() = first == 0 || second == 0 || first == lastIndex || second == lastIndex
