@@ -28,33 +28,26 @@ private fun readStacks(input: String, num: Int): List<CargoStack> {
     return stacks
 }
 
-private fun readMove(input: String): CargoCommand {
+private fun readCommand(input: String): CargoCommand {
     val (count, _, from, _, to) = input.substring(5).split(" ")
 
     return CargoCommand(count.toInt(), from.toInt(), to.toInt())
 }
 
-private fun puzzle1(input: String, cols: Int): String {
-    val (stacksSheet, movesSheet) = input.split("\n\n")
+private fun executeSheet(sheet: String, cols: Int, operation: List<CargoStack>.(CargoCommand) -> Unit): String {
+    val (stacksSheet, commandsSheet) = sheet.split("\n\n")
 
     val stacks = readStacks(stacksSheet, cols)
-    val moves = movesSheet.trim().lines()
+    val commands = commandsSheet.trim().lines()
 
-    moves.forEach { stacks.move(readMove(it)) }
+    commands.forEach { stacks.operation(readCommand(it)) }
 
     return stacks.top()
 }
 
-private fun puzzle2(input: String, cols: Int): String {
-    val (stacksSheet, movesSheet) = input.split("\n\n")
+private fun puzzle1(sheet: String, cols: Int) = executeSheet(sheet, cols) { move(it) }
 
-    val stacks = readStacks(stacksSheet, cols)
-    val moves = movesSheet.trim().lines()
-
-    moves.forEach { stacks.moveAtOnce(readMove(it)) }
-
-    return stacks.top()
-}
+private fun puzzle2(sheet: String, cols: Int) = executeSheet(sheet, cols) { moveAtOnce(it) }
 
 fun main() {
     val testInput = readText("day_05_input_test")
