@@ -1,6 +1,6 @@
-private typealias Section = Pair<Int, Int>
+typealias Section = Pair<Int, Int>
 
-private typealias CompareFn = (Section, Section) -> Boolean
+typealias CompareFn = (Section, Section) -> Boolean
 
 private fun Section.contains(number: Int) = number in first..second
 
