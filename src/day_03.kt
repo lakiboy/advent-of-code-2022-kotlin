@@ -7,7 +7,7 @@ private val priorityMap: Map<Char, Int> = buildMap {
 
 private val Char.priority get() = priorityMap[this] ?: 0
 
-private fun String.intersect(other: String) = toCharArray().toSet().intersect(other.toCharArray().toSet())
+private fun String.intersect(other: String) = toSet() intersect other.toSet()
 
 private fun findUniqueElement(line: String): Char {
     val pos = line.length / 2
