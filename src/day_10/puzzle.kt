@@ -1,4 +1,9 @@
-private class Program(commands: List<String>) {
+package day_10
+
+import println
+import readInput
+
+class Program(commands: List<String>) {
     private var x = 1
     private var cycles = 0
     private var cursor = 0
@@ -43,9 +48,9 @@ private class Program(commands: List<String>) {
     }
 }
 
-private fun puzzle1(lines: List<String>) = Program(lines).apply { execute() }.signalStrength
+fun puzzle1(lines: List<String>) = Program(lines).apply { execute() }.signalStrength
 
-private fun puzzle2(lines: List<String>) = Program(lines).apply { execute() }.screen
+fun puzzle2(lines: List<String>) = Program(lines).apply { execute() }.screen
 
 fun main() {
     val output = """
@@ -57,11 +62,11 @@ fun main() {
         #######.......#######.......#######.....
     """.trimIndent()
 
-    val testInput = readInput("day_10_input_test")
+    val testInput = readInput("day_10/input_test")
     check(puzzle1(testInput) == 13140)
     check(puzzle2(testInput) == output)
 
-    val input = readInput("day_10_input")
+    val input = readInput("day_10/input")
     puzzle1(input).println()
     puzzle2(input).println()
 }
