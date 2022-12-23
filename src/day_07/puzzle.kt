@@ -1,6 +1,11 @@
-private data class File(private val name: String, val size: Int)
+package day_07
 
-private data class Dir(
+import println
+import readInput
+
+data class File(private val name: String, val size: Int)
+
+data class Dir(
     private val name: String,
     private val dirs: MutableSet<Dir> = mutableSetOf(),
     private val files: MutableSet<File> = mutableSetOf(),
@@ -27,7 +32,7 @@ private data class Dir(
     }
 }
 
-private fun readFs(lines: List<String>): Dir {
+fun readFs(lines: List<String>): Dir {
     val rootDir = Dir.root()
     val pushd = mutableListOf<Dir>()
 
@@ -47,13 +52,13 @@ private fun readFs(lines: List<String>): Dir {
     return rootDir
 }
 
-private fun puzzle1(lines: List<String>) = readFs(lines)
+fun puzzle1(lines: List<String>) = readFs(lines)
     .flatten()
     .map { it.size }
     .filter { it <= 100_000 }
     .sum()
 
-private fun puzzle2(lines: List<String>): Int {
+fun puzzle2(lines: List<String>): Int {
     val fs = readFs(lines)
 
     val taken = fs.size
@@ -66,11 +71,11 @@ private fun puzzle2(lines: List<String>): Int {
 }
 
 fun main() {
-    val testInput = readInput("day_07_input_test")
+    val testInput = readInput("day_07/input_test")
     check(puzzle1(testInput) == 95437)
     check(puzzle2(testInput) == 24933642)
 
-    val input = readInput("day_07_input")
+    val input = readInput("day_07/input")
     puzzle1(input).println()
     puzzle2(input).println()
 }

@@ -1,14 +1,19 @@
+package day_08
+
 // No optimization e.g. no cache, no tail recursion.
+
+import println
+import readInput
 
 typealias Trees = List<List<Int>>
 typealias TreeCoords = Pair<Int, Int>
 
-private fun TreeCoords.top() = Pair(first - 1, second)
-private fun TreeCoords.bottom() = Pair(first + 1, second)
-private fun TreeCoords.left() = Pair(first, second - 1)
-private fun TreeCoords.right() = Pair(first, second + 1)
+fun TreeCoords.top() = Pair(first - 1, second)
+fun TreeCoords.bottom() = Pair(first + 1, second)
+fun TreeCoords.left() = Pair(first, second - 1)
+fun TreeCoords.right() = Pair(first, second + 1)
 
-private class TreeGrid private constructor(private val trees: Trees) {
+class TreeGrid private constructor(private val trees: Trees) {
     private val lastIndex = trees.size - 1
 
     val visibleCount
@@ -86,16 +91,16 @@ private class TreeGrid private constructor(private val trees: Trees) {
     }
 }
 
-private fun puzzle1(lines: List<String>) = TreeGrid.fromLines(lines).visibleCount
+fun puzzle1(lines: List<String>) = TreeGrid.fromLines(lines).visibleCount
 
-private fun puzzle2(lines: List<String>) = TreeGrid.fromLines(lines).scenicScore
+fun puzzle2(lines: List<String>) = TreeGrid.fromLines(lines).scenicScore
 
 fun main() {
-    val testInput = readInput("day_08_input_test")
+    val testInput = readInput("day_08/input_test")
     check(puzzle1(testInput) == 21)
     check(puzzle2(testInput) == 8)
 
-    val input = readInput("day_08_input")
+    val input = readInput("day_08/input")
     puzzle1(input).println()
     puzzle2(input).println()
 }

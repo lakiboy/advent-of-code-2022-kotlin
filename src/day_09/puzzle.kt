@@ -1,7 +1,11 @@
-import Direction.*
+package day_09
+
+import day_09.Direction.*
+import println
+import readInput
 import kotlin.math.absoluteValue
 
-private data class Position(private val x: Int, private val y: Int) {
+data class Position(private val x: Int, private val y: Int) {
     fun move(dir: Direction) = when (dir) {
         UP -> Position(x, y - 1)
         DOWN -> Position(x, y + 1)
@@ -39,7 +43,7 @@ private data class Position(private val x: Int, private val y: Int) {
     }
 }
 
-private fun MutableList<Position>.follow(head: Position) {
+fun MutableList<Position>.follow(head: Position) {
     var node = head
 
     for (index in indices) {
@@ -53,7 +57,7 @@ private fun MutableList<Position>.follow(head: Position) {
     }
 }
 
-private enum class Direction {
+enum class Direction {
     UP, DOWN, LEFT, RIGHT;
 
     companion object {
@@ -67,7 +71,7 @@ private enum class Direction {
     }
 }
 
-private class Motions(size: Int) {
+class Motions(size: Int) {
     private var head = Position(0, 0)
     private val items = MutableList(size) { head }
     private val visits = mutableSetOf<Position>()
@@ -84,7 +88,7 @@ private class Motions(size: Int) {
     }
 }
 
-private fun puzzle(lines: List<String>, size: Int = 1) = Motions(size)
+fun puzzle(lines: List<String>, size: Int = 1) = Motions(size)
     .apply {
         lines.forEachIndexed { index, line ->
             val (dir, len) = line
@@ -93,15 +97,15 @@ private fun puzzle(lines: List<String>, size: Int = 1) = Motions(size)
     }
     .tailVisits
 
-private operator fun String.component1() = substringBefore(" ").first()
-private operator fun String.component2() = substringAfter(" ").toInt()
+operator fun String.component1() = substringBefore(" ").first()
+operator fun String.component2() = substringAfter(" ").toInt()
 
 fun main() {
-    check(puzzle(readInput("day_09_input_test_1"), 1) == 13)
-    check(puzzle(readInput("day_09_input_test_1"), 9) == 1)
-    check(puzzle(readInput("day_09_input_test_2"), 9) == 36)
+    check(puzzle(readInput("day_09/input_test_1"), 1) == 13)
+    check(puzzle(readInput("day_09/input_test_1"), 9) == 1)
+    check(puzzle(readInput("day_09/input_test_2"), 9) == 36)
 
-    val input = readInput("day_09_input")
+    val input = readInput("day_09/input")
     puzzle(input, 1).println()
     puzzle(input, 9).println()
 }

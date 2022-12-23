@@ -1,4 +1,9 @@
-private enum class Outcome(val points: Int) {
+package day_02
+
+import println
+import readInput
+
+enum class Outcome(val points: Int) {
     WIN(6),
     DRAW(3),
     LOSS(0);
@@ -13,7 +18,7 @@ private enum class Outcome(val points: Int) {
     }
 }
 
-private enum class Shape(val points: Int) {
+enum class Shape(val points: Int) {
     ROCK(1),
     PAPER(2),
     SCISSORS(3);
@@ -28,11 +33,11 @@ private enum class Shape(val points: Int) {
     }
 }
 
-private typealias Game = Pair<Shape, Shape>
+typealias Game = Pair<Shape, Shape>
 
-private typealias Prediction = Pair<Shape, Outcome>
+typealias Prediction = Pair<Shape, Outcome>
 
-private val Game.outcome
+val Game.outcome
     get() = when (this) {
         Shape.ROCK to Shape.ROCK,
         Shape.PAPER to Shape.PAPER,
@@ -45,9 +50,9 @@ private val Game.outcome
         else -> Outcome.WIN
     }
 
-private val Game.myScore get() = second.points + outcome.points
+val Game.myScore get() = second.points + outcome.points
 
-private val Prediction.game
+val Prediction.game
     get() = when (this) {
         Shape.ROCK to Outcome.WIN,
         Shape.PAPER to Outcome.DRAW,
@@ -60,20 +65,20 @@ private val Prediction.game
         else -> first to Shape.SCISSORS
     }
 
-private fun createGame(moves: String) = Shape.fromChar(moves[0]) to Shape.fromChar(moves[2])
+fun createGame(moves: String) = Shape.fromChar(moves[0]) to Shape.fromChar(moves[2])
 
-private fun createPrediction(moves: String) = Shape.fromChar(moves[0]) to Outcome.fromChar(moves[2])
+fun createPrediction(moves: String) = Shape.fromChar(moves[0]) to Outcome.fromChar(moves[2])
 
-private fun puzzle1(input: List<String>) = input.map(::createGame).sumOf { it.myScore }
+fun puzzle1(input: List<String>) = input.map(::createGame).sumOf { it.myScore }
 
-private fun puzzle2(input: List<String>) = input.map(::createPrediction).sumOf { it.game.myScore }
+fun puzzle2(input: List<String>) = input.map(::createPrediction).sumOf { it.game.myScore }
 
 fun main() {
-    val testInput = readInput("day_02_input_test")
+    val testInput = readInput("day_02/input_test")
     check(puzzle1(testInput) == 15)
     check(puzzle2(testInput) == 12)
 
-    val input = readInput("day_02_input")
+    val input = readInput("day_02/input")
     puzzle1(input).println()
     puzzle2(input).println()
 }
