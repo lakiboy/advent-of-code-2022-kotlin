@@ -7,78 +7,64 @@ import kotlin.math.absoluteValue
 
 enum class Direction { UP, DOWN, LEFT, RIGHT }
 
-data class Coordinates(val x: Int, val y: Int) {
+data class Point(val x: Int, val y: Int) {
     fun move(direction: Direction) = when (direction) {
-        UP -> Coordinates(x, y - 1)
-        DOWN -> Coordinates(x, y + 1)
-        RIGHT -> Coordinates(x + 1, y)
-        LEFT -> Coordinates(x - 1, y)
+        UP -> Point(x, y - 1)
+        DOWN -> Point(x, y + 1)
+        RIGHT -> Point(x + 1, y)
+        LEFT -> Point(x - 1, y)
     }
 }
 
 class HeightMap(lines: List<String>) {
-    private lateinit var cursor: Coordinates
-    private lateinit var finish: Coordinates
+    private lateinit var start: Point
+    private lateinit var finish: Point
     private val grid = lines.mapIndexed { y, line ->
         line.mapIndexed { x, char ->
             when (char) {
                 'S' -> {
-                    cursor = Coordinates(x, y)
+                    start = Point(x, y)
                     1
                 }
-
                 'E' -> {
-                    finish = Coordinates(x, y)
+                    finish = Point(x, y)
                     26
                 }
-
                 else -> char - 'a' + 1
             }
         }
     }
-    private val visited = mutableSetOf<Coordinates>()
+    private val visited = mutableSetOf<Point>()
 
-    var steps = 0
+    var distance = 0
+        private set
 
     init {
-        while (cursor != finish) {
-            visited.add(cursor)
-            cursor = cursor
-                .bestMoves(finish)
-                .first { direction -> cursor.canMoveTowards(direction) }
-                .let { direction -> cursor.move(direction) }
-                .also { steps++ }
-        }
+        dfs(start, 0)
     }
 
-    private fun Coordinates.canMoveTowards(direction: Direction) = move(direction)
-        .takeUnless { it.invalid }
-        ?.let { to -> grid[y][x] + 1 >= grid[to.y][to.x] }
-        ?: false
+    private val Point.valid get() = x >= 0 && y >= 0 && y <= grid.lastIndex && x <= grid[y].lastIndex
 
-    private val Coordinates.invalid get() = this in visited || x < 0 || y < 0 || y > grid.lastIndex || x > grid[y].lastIndex
+    private val Point.neighbours get() = Direction
+        .values()
+        .map { move(it) }
+        .filter { to -> to.valid }
+        .filter { to -> to !in visited }
+        .filter { to -> grid[y][x] + 1 >= grid[to.y][to.x] }
+        .sortedBy { to -> (to.x - finish.x).absoluteValue + (to.y - finish.y).absoluteValue - grid[to.y][to.x] }
 
-    private fun Coordinates.bestMoves(other: Coordinates): List<Direction> {
-        val dx = other.x - x
-        val dy = other.y - y
+    private fun dfs(node: Point, depth: Int) {
+        visited.add(node)
 
-        return buildList {
-            if (dx.absoluteValue > dy.absoluteValue) {
-                add(if (dx > 0) RIGHT else LEFT)
-                add(if (dy > 0) DOWN else UP)
-                add(if (dy > 0) UP else DOWN)
-                add(if (dx > 0) LEFT else RIGHT)
-            } else {
-                add(if (dy > 0) DOWN else UP)
-                add(if (dx > 0) RIGHT else LEFT)
-                add(if (dx > 0) LEFT else RIGHT)
-                add(if (dy > 0) UP else DOWN)
-            }
+        if (node == finish) {
+            distance = depth
+        } else {
+            node.neighbours.forEach { neighbour -> dfs(neighbour, depth + 1) }
         }
     }
 }
 
-fun puzzle1(lines: List<String>) = HeightMap(lines).steps
+fun puzzle1(lines: List<String>) = HeightMap(lines).distance
 
 fun main() {
     val testInput = readInput("day_12/input_test")
