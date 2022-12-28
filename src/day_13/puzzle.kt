@@ -8,16 +8,17 @@ sealed class Packet {
         fun fromLine(line: String) = if ('[' in line) Items.fromString(line) else Number.fromString(line)
     }
 
-    operator fun compareTo(other: Packet): Int = when {
-        this is Number && other is Number -> compareTo(other)
-        this is Number -> asItems().compareTo(other)
-        other is Number -> compareTo(other.asItems())
-        this is Items && other is Items -> zip(other).firstOrNull { (left, right) -> left.compareTo(right) != 0 }
-            ?.let { (left, right) -> left.compareTo(right) } // Compare two times for nicer chain.
-            ?: (size - other.size)
-
-        // How to make this exhaustive?
-        else -> 0
+    operator fun compareTo(other: Packet): Int = when (this) {
+        is Number -> when (other) {
+            is Number -> compareTo(other)
+            is Items -> asItems().compareTo(other)
+        }
+        is Items -> when (other) {
+            is Number -> compareTo(other.asItems())
+            is Items -> zip(other).firstNotNullOfOrNull { (left, right) ->
+                left.compareTo(right).takeUnless { it == 0 }
+            } ?: (size - other.size)
+        }
     }
 
     data class Number(private val value: Int) : Packet() {
