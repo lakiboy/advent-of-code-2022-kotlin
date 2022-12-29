@@ -19,12 +19,6 @@ data class Point(val x: Int, val y: Int) {
         )
     }
 
-    fun down() = move(DOWN)
-
-    fun downLeft() = down().move(LEFT)
-
-    fun downRight() = down().move(RIGHT)
-
     fun move(direction: Direction) = when (direction) {
         UP -> Point(x, y - 1)
         DOWN -> Point(x, y + 1)
@@ -74,9 +68,9 @@ class Board(points: Set<Point>) {
     }
 
     private val nextMoves = listOf<NextMove>(
-        { down() },
-        { downLeft() },
-        { downRight() }
+        { move(DOWN) },
+        { move(DOWN).move(LEFT) },
+        { move(DOWN).move(RIGHT) }
     )
 
     var unitsOfSand = 0
@@ -97,13 +91,20 @@ class Board(points: Set<Point>) {
 
         do {
             prev = node
-            val next = nextMoves
-                .map { move -> node.move() }
-                .firstOrNull { !it.inAbyss && it.air }
-                ?.let { node = it }
-        } while (next != null)
+            val next = nextMoves.map { move -> node.move() }
 
-        return prev.takeIf { it.air && !it.down().inAbyss }
+            if (next.any { it.inAbyss }) {
+                return null
+            }
+
+            if (next.none { it.air }) {
+                break
+            }
+
+            node = next.first { it.air }
+        } while (true)
+
+        return prev.takeUnless { it == root }
     }
 
     private val Point.air get() = cell == AIR
@@ -132,13 +133,13 @@ fun puzzle1(input: List<String>): Int {
         .toHashSet()
         .apply { add(Point.Start) }
 
-    return Board(points).also { it.println() }.unitsOfSand
+    return Board(points).unitsOfSand
 }
 
 fun main() {
     val testInput = readInput("day_14/input_test")
     check(puzzle1(testInput) == 24)
 
-//    val input = readInput("day_14/input")
-//    puzzle1(input).println()
+    val input = readInput("day_14/input")
+    puzzle1(input).println()
 }
