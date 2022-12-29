@@ -3,7 +3,7 @@ package day_01
 import println
 import readInput
 
-fun reduceLines(lines: List<String>): List<Int> {
+private fun reduceLines(lines: List<String>): List<Int> {
     var index = 0
 
     return lines.fold(mutableListOf(0)) { list, line ->
@@ -26,8 +26,8 @@ fun puzzle2(input: List<String>) = reduceLines(input)
 
 fun main() {
     val testInput = readInput("day_01/input_test")
-    check(puzzle1(testInput) == 24000)
-    check(puzzle2(testInput) == 45000)
+    check(puzzle1(testInput) == 24_000)
+    check(puzzle2(testInput) == 45_000)
 
     val input = readInput("day_01/input")
     puzzle1(input).println()

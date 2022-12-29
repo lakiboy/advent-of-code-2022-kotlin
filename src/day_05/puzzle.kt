@@ -7,19 +7,19 @@ typealias CargoStack = ArrayDeque<Char>
 
 typealias CargoCommand = Triple<Int, Int, Int>
 
-fun List<CargoStack>.top() = joinToString("") { it.first().toString() }
+private fun List<CargoStack>.top() = joinToString("") { it.first().toString() }
 
-fun List<CargoStack>.move(command: CargoCommand) {
+private fun List<CargoStack>.move(command: CargoCommand) {
     val (count, from, to) = command
     repeat(count) { this[to - 1].addFirst(this[from - 1].removeFirst()) }
 }
 
-fun List<CargoStack>.moveAtOnce(command: CargoCommand) {
+private fun List<CargoStack>.moveAtOnce(command: CargoCommand) {
     val (count, from, to) = command
     repeat(count) { this[to - 1].addFirst(this[from - 1].removeAt(count - it - 1)) }
 }
 
-fun readStacks(input: String, num: Int): List<CargoStack> {
+private fun readStacks(input: String, num: Int): List<CargoStack> {
     val stacks = List(num) { CargoStack() }
 
     input.lines().dropLast(1).forEach { line ->
@@ -33,13 +33,13 @@ fun readStacks(input: String, num: Int): List<CargoStack> {
     return stacks
 }
 
-fun readCommand(input: String): CargoCommand {
+private fun readCommand(input: String): CargoCommand {
     val (count, _, from, _, to) = input.substring(5).split(" ")
 
     return CargoCommand(count.toInt(), from.toInt(), to.toInt())
 }
 
-fun executeSheet(sheet: String, cols: Int, operation: List<CargoStack>.(CargoCommand) -> Unit): String {
+private fun executeSheet(sheet: String, cols: Int, operation: List<CargoStack>.(CargoCommand) -> Unit): String {
     val (stacksSheet, commandsSheet) = sheet.split("\n\n")
 
     val stacks = readStacks(stacksSheet, cols)

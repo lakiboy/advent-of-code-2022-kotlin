@@ -7,15 +7,15 @@ typealias Section = Pair<Int, Int>
 
 typealias CompareFn = (Section, Section) -> Boolean
 
-fun Section.contains(number: Int) = number in first..second
+private fun Section.contains(number: Int) = number in first..second
 
-fun Section.contains(other: Section) = first <= other.first && second >= other.second
+private fun Section.intersects(other: Section) = other.contains(first) || other.contains(second)
 
-fun Section.intersects(other: Section) = other.contains(first) || other.contains(second)
+private fun Section.contains(other: Section) = first <= other.first && second >= other.second
 
-fun List<Int>.toPair() = this[0] to this[1]
+private fun List<Int>.toPair() = this[0] to this[1]
 
-fun compare(line: String, fn: CompareFn): Boolean {
+private fun compare(line: String, fn: CompareFn): Boolean {
     val (one, two) = line
         .split(",")
         .map { it.split("-").map(String::toInt).toPair() }
@@ -23,9 +23,9 @@ fun compare(line: String, fn: CompareFn): Boolean {
     return fn(one, two)
 }
 
-fun within(one: Section, two: Section) = one.contains(two) || two.contains(one)
+private fun within(one: Section, two: Section) = one.contains(two) || two.contains(one)
 
-fun overlap(one: Section, two: Section) = one.intersects(two) || two.intersects(one)
+private fun overlap(one: Section, two: Section) = one.intersects(two) || two.intersects(one)
 
 fun puzzle1(input: List<String>) = input.count { line -> compare(line, ::within) }
 

@@ -18,7 +18,9 @@ class Program(commands: List<String>) {
     private val sprite get() = (x - 1)..(x + 1)
 
     var signalStrength = 0
+        private set
     var screen = ""
+        private set
 
     fun execute() {
         while (stack.isNotEmpty()) {
@@ -63,7 +65,7 @@ fun main() {
     """.trimIndent()
 
     val testInput = readInput("day_10/input_test")
-    check(puzzle1(testInput) == 13140)
+    check(puzzle1(testInput) == 13_140)
     check(puzzle2(testInput) == output)
 
     val input = readInput("day_10/input")

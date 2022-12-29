@@ -5,7 +5,7 @@ import readText
 
 typealias Expression = (Long) -> Long
 
-fun expressionFactory(expr: String) = { value: Long ->
+private fun expressionFactory(expr: String) = { value: Long ->
     val (a, op, b) = expr.replace("old", value.toString()).split(" ")
     when (op) {
         "*" -> a.toLong() * b.toLong()

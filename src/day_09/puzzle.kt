@@ -43,7 +43,7 @@ data class Position(private val x: Int, private val y: Int) {
     }
 }
 
-fun MutableList<Position>.follow(head: Position) {
+private fun MutableList<Position>.follow(head: Position) {
     var node = head
 
     for (index in indices) {
@@ -90,15 +90,15 @@ class Motions(size: Int) {
 
 fun puzzle(lines: List<String>, size: Int = 1) = Motions(size)
     .apply {
-        lines.forEachIndexed { index, line ->
+        lines.forEach{ line ->
             val (dir, len) = line
             move(Direction.fromAlias(dir), len)
         }
     }
     .tailVisits
 
-operator fun String.component1() = substringBefore(" ").first()
-operator fun String.component2() = substringAfter(" ").toInt()
+private operator fun String.component1() = substringBefore(" ").first()
+private operator fun String.component2() = substringAfter(" ").toInt()
 
 fun main() {
     check(puzzle(readInput("day_09/input_test_1"), 1) == 13)

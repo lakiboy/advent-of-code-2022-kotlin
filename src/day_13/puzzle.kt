@@ -8,21 +8,11 @@ sealed class Packet : Comparable<Packet> {
         fun fromLine(line: String) = if ('[' in line) Items.fromString(line) else Number.fromString(line)
     }
 
-    override operator fun compareTo(other: Packet): Int = when (this) {
-        is Number -> when (other) {
-            is Number -> compareTo(other)
+    class Number(private val value: Int) : Packet() {
+        override operator fun compareTo(other: Packet) = when (other) {
+            is Number -> value - other.value
             is Items -> asItems().compareTo(other)
         }
-        is Items -> when (other) {
-            is Number -> compareTo(other.asItems())
-            is Items -> zip(other).firstNotNullOfOrNull { (left, right) ->
-                left.compareTo(right).takeUnless { it == 0 }
-            } ?: (size - other.size)
-        }
-    }
-
-    data class Number(private val value: Int) : Packet() {
-        operator fun compareTo(other: Number) = value - other.value
 
         fun asItems() = Items(listOf(this))
 
@@ -31,10 +21,13 @@ sealed class Packet : Comparable<Packet> {
         }
     }
 
-    data class Items(private val items: List<Packet>) : Packet() {
-        val size get() = items.size
-
-        fun zip(other: Items) = items.zip(other.items)
+    class Items(private val items: List<Packet>) : Packet() {
+        override operator fun compareTo(other: Packet): Int = when (other) {
+            is Number -> compareTo(other.asItems())
+            is Items -> items.zip(other.items)
+                .firstNotNullOfOrNull { (left, right) -> left.compareTo(right).takeUnless { it == 0 } }
+                ?: (items.size - other.items.size)
+        }
 
         companion object {
             fun fromString(s: String): Items {

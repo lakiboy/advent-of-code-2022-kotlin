@@ -1,6 +1,6 @@
 package day_08
 
-// No optimization e.g. no cache, no tail recursion.
+// Dumb: no optimization, no cache, no tail recursion.
 
 import println
 import readInput
@@ -8,10 +8,10 @@ import readInput
 typealias Trees = List<List<Int>>
 typealias TreeCoords = Pair<Int, Int>
 
-fun TreeCoords.top() = Pair(first - 1, second)
-fun TreeCoords.bottom() = Pair(first + 1, second)
-fun TreeCoords.left() = Pair(first, second - 1)
-fun TreeCoords.right() = Pair(first, second + 1)
+private fun TreeCoords.top() = Pair(first - 1, second)
+private fun TreeCoords.bottom() = Pair(first + 1, second)
+private fun TreeCoords.left() = Pair(first, second - 1)
+private fun TreeCoords.right() = Pair(first, second + 1)
 
 class TreeGrid private constructor(private val trees: Trees) {
     private val lastIndex = trees.size - 1

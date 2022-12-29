@@ -5,7 +5,7 @@ import readInput
 
 data class File(private val name: String, val size: Int)
 
-data class Dir(
+class Dir(
     private val name: String,
     private val dirs: MutableSet<Dir> = mutableSetOf(),
     private val files: MutableSet<File> = mutableSetOf(),
@@ -32,7 +32,7 @@ data class Dir(
     }
 }
 
-fun readFs(lines: List<String>): Dir {
+private fun readFs(lines: List<String>): Dir {
     val rootDir = Dir.root()
     val pushd = mutableListOf<Dir>()
 
@@ -62,18 +62,16 @@ fun puzzle2(lines: List<String>): Int {
     val fs = readFs(lines)
 
     val taken = fs.size
-    val total = 70_000_000
-    val required = 30_000_000
-    val free = total - taken
-    val allocate = required - free
+    val free = 70_000_000 - taken
+    val allocate = 30_000_000 - free
 
     return fs.flatten().map { it.size }.sorted().first { it >= allocate }
 }
 
 fun main() {
     val testInput = readInput("day_07/input_test")
-    check(puzzle1(testInput) == 95437)
-    check(puzzle2(testInput) == 24933642)
+    check(puzzle1(testInput) == 95_437)
+    check(puzzle2(testInput) == 24_933_642)
 
     val input = readInput("day_07/input")
     puzzle1(input).println()
