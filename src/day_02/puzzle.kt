@@ -37,7 +37,7 @@ typealias Game = Pair<Shape, Shape>
 
 typealias Prediction = Pair<Shape, Outcome>
 
-val Game.outcome
+private val Game.outcome
     get() = when (this) {
         Shape.ROCK to Shape.ROCK,
         Shape.PAPER to Shape.PAPER,
@@ -50,9 +50,9 @@ val Game.outcome
         else -> Outcome.WIN
     }
 
-val Game.myScore get() = second.points + outcome.points
+private val Game.myScore get() = second.points + outcome.points
 
-val Prediction.game
+private val Prediction.game
     get() = when (this) {
         Shape.ROCK to Outcome.WIN,
         Shape.PAPER to Outcome.DRAW,
@@ -65,9 +65,9 @@ val Prediction.game
         else -> first to Shape.SCISSORS
     }
 
-fun createGame(moves: String) = Shape.fromChar(moves[0]) to Shape.fromChar(moves[2])
+private fun createGame(moves: String) = Shape.fromChar(moves[0]) to Shape.fromChar(moves[2])
 
-fun createPrediction(moves: String) = Shape.fromChar(moves[0]) to Outcome.fromChar(moves[2])
+private fun createPrediction(moves: String) = Shape.fromChar(moves[0]) to Outcome.fromChar(moves[2])
 
 fun puzzle1(input: List<String>) = input.map(::createGame).sumOf { it.myScore }
 

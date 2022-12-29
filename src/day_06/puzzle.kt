@@ -3,7 +3,6 @@ package day_06
 import println
 import readText
 
-// Ineffective, but single expression :)
 fun puzzle(input: String, len: Int) = (0 until input.length - len)
     .first { index -> input.substring(index, index + len).toSet().size == len } + len
 
