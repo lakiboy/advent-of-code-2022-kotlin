@@ -63,7 +63,7 @@ class HeightMap(lines: List<String>) {
             .filter { to -> to.valid && value + 1 >= to.value }
 
     private fun bfs(root: Point): Int? {
-        val queue = mutableListOf<Pair<Point, Int>>()
+        val queue = ArrayDeque<Pair<Point, Int>>()
         val visited = mutableSetOf<Point>()
 
         queue.add(root to 0)
