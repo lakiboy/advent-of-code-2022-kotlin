@@ -31,7 +31,7 @@ sealed class Packet : Comparable<Packet> {
 
         companion object {
             fun fromString(s: String): Items {
-                val stack = mutableListOf<Char>()
+                val stack = ArrayDeque<Char>()
                 var level = 0
                 val items = mutableListOf<Packet>()
 
@@ -44,7 +44,8 @@ sealed class Packet : Comparable<Packet> {
                     stack.add(char)
 
                     if (char == ',' && level == 0) {
-                        items.add(fromLine(stack.dropLast(1).joinToString("")))
+                        stack.removeLast()
+                        items.add(fromLine(stack.joinToString("")))
                         stack.clear()
                     }
                 }

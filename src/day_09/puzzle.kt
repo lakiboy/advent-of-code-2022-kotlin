@@ -90,7 +90,7 @@ class Motions(size: Int) {
 
 fun puzzle(lines: List<String>, size: Int = 1) = Motions(size)
     .apply {
-        lines.forEach{ line ->
+        lines.forEach { line ->
             val (dir, len) = line
             move(Direction.fromAlias(dir), len)
         }
