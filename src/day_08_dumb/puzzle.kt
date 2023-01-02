@@ -1,4 +1,4 @@
-package day_08
+package day_08_dumb
 
 // Dumb: no optimization, no cache, no tail recursion.
 
