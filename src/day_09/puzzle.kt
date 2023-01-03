@@ -74,17 +74,14 @@ enum class Direction {
 class Motions(size: Int) {
     private var head = Position(0, 0)
     private val items = MutableList(size) { head }
-    private val visits = mutableSetOf<Position>()
+    private val visits = hashSetOf<Position>()
 
     val tailVisits get() = visits.size
 
     fun move(dir: Direction, len: Int) = repeat(len) {
         head = head.move(dir)
         items.follow(head)
-
-        if (items.last() !in visits) {
-            visits.add(items.last())
-        }
+        visits += items.last()
     }
 }
 
