@@ -9,6 +9,12 @@ typealias NextMove = Point.() -> Point
 
 enum class Direction { UP, DOWN, LEFT, RIGHT }
 
+private val moves = listOf<NextMove>(
+    { this + DOWN },
+    { this + DOWN + LEFT },
+    { this + DOWN + RIGHT }
+)
+
 data class Point(val x: Int, val y: Int) {
     companion object {
         val Start = Point(500, 0)
@@ -19,7 +25,7 @@ data class Point(val x: Int, val y: Int) {
         )
     }
 
-    fun move(direction: Direction) = when (direction) {
+    operator fun plus(direction: Direction) = when (direction) {
         UP -> Point(x, y - 1)
         DOWN -> Point(x, y + 1)
         LEFT -> Point(x - 1, y)
@@ -40,49 +46,23 @@ data class Line(private val a: Point, private val b: Point) {
             add(a)
 
             while (p != b) {
-                p = p.move(direction)
+                p += direction
                 add(p)
             }
         }
     }
 }
 
-private const val START = '+'
-private const val ROCK = '#'
-private const val SAND = 'o'
-private const val AIR = '.'
+class Board(points: Map<Point, Boolean>, private val safe: Boolean) {
+    private val maxY = points.keys.maxOf { it.y }.let { if (safe) it + 2 else it }
+    private val grid = points.toMutableMap().apply { put(Point.Start, false) }
 
-class Board(points: Set<Point>) {
-    private val minX = points.minOf { it.x }
-    private val minY = points.minOf { it.y }
-    private val maxX = points.maxOf { it.x }
-    private val maxY = points.maxOf { it.y }
-    private val grid = MutableList(maxY - minY + 1) { y ->
-        MutableList(maxX - minX + 1) { x ->
-            when (Point(x + minX, y + minY)) {
-                Point.Start -> START
-                in points -> ROCK
-                else -> AIR
-            }
-        }
-    }
-
-    private val nextMoves = listOf<NextMove>(
-        { move(DOWN) },
-        { move(DOWN).move(LEFT) },
-        { move(DOWN).move(RIGHT) }
-    )
-
-    var unitsOfSand = 0
-        private set
-
-    init {
+    val unitsOfSand by lazy {
         do {
-            val node = findSandLocation(Point.Start)?.also {
-                it.cell = SAND
-                unitsOfSand++
-            }
-        } while (node != null)
+            findSandLocation(Point.Start)?.let { node -> grid[node] = true } ?: break
+        } while (true)
+
+        grid.values.count { it } + (if (safe) 1 else 0)
     }
 
     private fun findSandLocation(root: Point): Point? {
@@ -91,33 +71,20 @@ class Board(points: Set<Point>) {
 
         do {
             prev = node
-            val next = nextMoves.map { move -> node.move() }
+            val next = moves.map { move -> node.move() }
 
-            if (next.any { it.inAbyss }) {
+            if (!safe && next.any { it.y > maxY }) {
                 return null
             }
 
-            if (next.none { it.air }) {
+            if (next.all { it in grid || (safe && it.y == maxY) }) {
                 break
             }
 
-            node = next.first { it.air }
+            node = next.first { it !in grid }
         } while (true)
 
         return prev.takeUnless { it == root }
-    }
-
-    private val Point.air get() = cell == AIR
-
-    private val Point.inAbyss get() = x < minX || y < minY || x > maxX || y > maxY
-
-    private var Point.cell get() = grid[y - minY][x - minX]
-        set(value) {
-            grid[y - minY][x - minX] = value
-        }
-
-    override fun toString() = grid.joinToString("\n") { rows ->
-        rows.joinToString("")
     }
 }
 
@@ -125,21 +92,26 @@ private fun Path.toLines() = zipWithNext { a, b -> Line(a, b) }
 
 private fun String.toPath() = split(" -> ").map { Point.of(it) }
 
-fun puzzle1(input: List<String>): Int {
+private fun createBoard(input: List<String>, safe: Boolean = false): Board {
     val points = input
         .map { s -> s.toPath() }
         .flatMap { path -> path.toLines() }
         .flatMap { line -> line.toPoints() }
-        .toHashSet()
-        .apply { add(Point.Start) }
+        .associateWith { false }
 
-    return Board(points).unitsOfSand
+    return Board(points, safe)
 }
+
+fun puzzle1(input: List<String>) = createBoard(input).unitsOfSand
+
+fun puzzle2(input: List<String>) = createBoard(input, safe = true).unitsOfSand
 
 fun main() {
     val testInput = readInput("day_14/input_test")
     check(puzzle1(testInput) == 24)
+    check(puzzle2(testInput) == 93)
 
     val input = readInput("day_14/input")
     puzzle1(input).println()
+    puzzle2(input).println()
 }
