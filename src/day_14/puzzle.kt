@@ -55,21 +55,21 @@ data class Line(private val a: Point, private val b: Point) {
 
 class Board(points: Map<Point, Boolean>, private val safe: Boolean) {
     private val maxY = points.keys.maxOf { it.y }.let { if (safe) it + 2 else it }
-    private val grid = points.toMutableMap().apply { put(Point.Start, false) }
+    private val grid = points.toMutableMap().apply { put(Point.Start, safe) } // For safe +1
 
     val unitsOfSand by lazy {
-        do {
+        while (true) {
             findSandLocation(Point.Start)?.let { node -> grid[node] = true } ?: break
-        } while (true)
+        }
 
-        grid.values.count { it } + (if (safe) 1 else 0)
+        grid.values.count { it }
     }
 
     private fun findSandLocation(root: Point): Point? {
         var node = root
         var prev: Point
 
-        do {
+        while (true) {
             prev = node
             val next = moves.map { move -> node.move() }
 
@@ -82,7 +82,7 @@ class Board(points: Map<Point, Boolean>, private val safe: Boolean) {
             }
 
             node = next.first { it !in grid }
-        } while (true)
+        }
 
         return prev.takeUnless { it == root }
     }
