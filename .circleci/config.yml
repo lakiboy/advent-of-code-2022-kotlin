@@ -1,0 +1,36 @@
+version: 2.1
+jobs:
+  test:
+    resource_class: small
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+            - gradle-cache-{{ checksum "build.gradle.kts" }}
+      - run:
+          name: Static analyzer
+          command: ./gradlew detekt
+      - run:
+          name: Running tests
+          command: ./gradlew test
+      - save_cache:
+          key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+          paths:
+            - ~/.gradle/wrapper
+      - save_cache:
+          key: gradle-cache-{{ checksum "build.gradle.kts" }}
+          paths:
+            - ~/.gradle/caches
+      - store_test_results:
+          path: build/test-results/test
+      - store_artifacts:
+          path: build/reports/tests/test
+          destination: coverage-test
+
+workflows:
+  "Build and test":
+    jobs:
+      - test
