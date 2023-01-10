@@ -1,3 +1,5 @@
 style:
   MagicNumber:
     active: false
+  DestructuringDeclarationWithTooManyEntries:
+    maxDestructuringEntries: 5
