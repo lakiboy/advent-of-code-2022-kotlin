@@ -1,25 +1,32 @@
-# advent-of-code-22-kotlin
+# Advent of Code 2022 in Kotlin
 
-Welcome to the Advent of Code[^aoc] Kotlin project created by [lakiboy][github] using the [Advent of Code Kotlin Template][template] delivered by JetBrains.
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/lakiboy/advent-of-code-22-kotlin/tree/reorganization.svg?style=svg&circle-token=0104223da0789fd7cbd9f2a2d030f91c76845550)](https://dl.circleci.com/status-badge/redirect/gh/lakiboy/advent-of-code-22-kotlin/tree/reorganization)
 
-In this repository, lakiboy is about to provide solutions for the puzzles using [Kotlin][kotlin] language.
+My solutions (WIP) for the [Advent of Code 2022](https://adventofcode.com/2022) puzzles in [Kotlin](https://kotlinlang.org).
 
-If you're stuck with Kotlin-specific questions or anything related to this template, check out the following resources:
+The ultimate goal:
 
-- [Kotlin docs][docs]
-- [Kotlin Slack][slack]
-- Template [issue tracker][issues]
+ - to play around with Kotlin and improve [Standard library](https://kotlinlang.org/api/latest/jvm/stdlib/) knowledge;
+ - to revisit some algorithms and stay in shape;
+ - to play around with [benchmarking](https://github.com/Kotlin/kotlinx-benchmark);
+ - and most importantly to have fun.
 
+## Puzzles
 
-[^aoc]:
-    [Advent of Code][aoc] – An annual event of Christmas-oriented programming challenges started December 2015.
-    Every year since then, beginning on the first day of December, a programming puzzle is published every day for twenty-five days.
-    You can solve the puzzle and provide an answer using the language of your choice.
-
-[aoc]: https://adventofcode.com
-[docs]: https://kotlinlang.org/docs/home.html
-[github]: https://github.com/lakiboy
-[issues]: https://github.com/kotlin-hands-on/advent-of-code-kotlin-template/issues
-[kotlin]: https://kotlinlang.org
-[slack]: https://surveys.jetbrains.com/s3/kotlin-slack-sign-up
-[template]: https://github.com/kotlin-hands-on/advent-of-code-kotlin-template
+| Day | Title                   | Task                                         | Input                                | Solution                                               | Test                                                     |
+|-----|-------------------------|----------------------------------------------|--------------------------------------|--------------------------------------------------------|----------------------------------------------------------|
+| 1   | Calorie Counting        | [Docs](https://adventofcode.com/2022/day/1)  | [Text](src/main/resources/day01.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day01.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day01Test.kt) |
+| 2   | Rock Paper Scissors     | [Docs](https://adventofcode.com/2022/day/2)  | [Text](src/main/resources/day02.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day02.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day02Test.kt) |
+| 3   | Rucksack Reorganization | [Docs](https://adventofcode.com/2022/day/3)  | [Text](src/main/resources/day03.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day03.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day03Test.kt) |
+| 4   | Camp Cleanup            | [Docs](https://adventofcode.com/2022/day/4)  | [Text](src/main/resources/day04.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day04.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day04Test.kt) |
+| 5   | Supply Stacks           | [Docs](https://adventofcode.com/2022/day/5)  | [Text](src/main/resources/day05.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day05.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day05Test.kt) |
+| 6   | Tuning Trouble          | [Docs](https://adventofcode.com/2022/day/6)  | [Text](src/main/resources/day06.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day06.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day06Test.kt) |
+| 7   | No Space Left On Device | [Docs](https://adventofcode.com/2022/day/7)  | [Text](src/main/resources/day07.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day07.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day07Test.kt) |
+| 8   | Treetop Tree House      | [Docs](https://adventofcode.com/2022/day/8)  | [Text](src/main/resources/day08.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day08.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day08Test.kt) |
+| 9   | Rope Bridge             | [Docs](https://adventofcode.com/2022/day/9)  | [Text](src/main/resources/day09.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day09.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day09Test.kt) |
+| 10  | Cathode-Ray Tube        | [Docs](https://adventofcode.com/2022/day/10) | [Text](src/main/resources/day10.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day10.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day10Test.kt) |
+| 11  | Monkey in the Middle    | [Docs](https://adventofcode.com/2022/day/11) | [Text](src/main/resources/day11.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day11.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day11Test.kt) |
+| 12  | Hill Climbing Algorithm | [Docs](https://adventofcode.com/2022/day/12) | [Text](src/main/resources/day12.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day12.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day12Test.kt) |
+| 13  | Distress Signal         | [Docs](https://adventofcode.com/2022/day/13) | [Text](src/main/resources/day13.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day13.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day13Test.kt) |
+| 14  | Regolith Reservoir      | [Docs](https://adventofcode.com/2022/day/14) | [Text](src/main/resources/day14.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day14.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day14Test.kt) |
+| 15  | Beacon Exclusion Zone   | [Docs](https://adventofcode.com/2022/day/15) | [Text](src/main/resources/day15.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day15.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day15Test.kt) |
