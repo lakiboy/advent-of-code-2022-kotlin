@@ -1,6 +1,6 @@
 # Advent of Code 2022 in Kotlin
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/lakiboy/advent-of-code-22-kotlin/tree/reorganization.svg?style=svg&circle-token=0104223da0789fd7cbd9f2a2d030f91c76845550)](https://dl.circleci.com/status-badge/redirect/gh/lakiboy/advent-of-code-22-kotlin/tree/reorganization)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/lakiboy/advent-of-code-22-kotlin.svg?style=svg&circle-token=0104223da0789fd7cbd9f2a2d030f91c76845550)](https://dl.circleci.com/status-badge/redirect/gh/lakiboy/advent-of-code-22-kotlin/tree/reorganization)
 
 My solutions (WIP) for the [Advent of Code 2022](https://adventofcode.com/2022) puzzles in [Kotlin](https://kotlinlang.org).
 
@@ -8,7 +8,7 @@ The ultimate goal:
 
  - to play around with Kotlin and improve [Standard library](https://kotlinlang.org/api/latest/jvm/stdlib/) knowledge;
  - to revisit some algorithms and stay in shape;
- - to play around with [benchmarking](https://github.com/Kotlin/kotlinx-benchmark);
+ - to evaluate [kotlinx.benchmark](https://github.com/Kotlin/kotlinx-benchmark);
  - and most importantly to have fun.
 
 ## Puzzles
