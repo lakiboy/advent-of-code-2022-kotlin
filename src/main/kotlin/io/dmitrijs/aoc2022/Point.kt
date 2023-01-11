@@ -3,6 +3,8 @@ package io.dmitrijs.aoc2022
 data class Point(val x: Int, val y: Int) {
     operator fun plus(other: Point) = copy(x = x + other.x, y = y + other.y)
 
+    operator fun plus(other: Direction) = plus(other.move)
+
     operator fun times(distance: Int) = copy(x = x * distance, y = y * distance)
 }
 
