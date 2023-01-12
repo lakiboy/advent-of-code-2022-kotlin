@@ -1,5 +1,9 @@
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension.Companion.DEFAULT_SRC_DIR_KOTLIN
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension.Companion.DEFAULT_TEST_SRC_DIR_KOTLIN
 import kotlinx.benchmark.gradle.JvmBenchmarkTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+val benchmarksSrc = "src/benchmarks/kotlin"
 
 plugins {
     kotlin("jvm") version "1.7.22"
@@ -10,6 +14,16 @@ plugins {
 
 repositories {
     mavenCentral()
+}
+
+kotlin {
+    sourceSets {
+        main {
+            kotlin {
+                srcDir(benchmarksSrc)
+            }
+        }
+    }
 }
 
 dependencies {
@@ -36,11 +50,18 @@ allOpen {
 detekt {
     config = files("detekt-config.yml")
     buildUponDefaultConfig = true
+    source = objects.fileCollection().from(
+        DEFAULT_SRC_DIR_KOTLIN,
+        DEFAULT_TEST_SRC_DIR_KOTLIN,
+        benchmarksSrc
+    )
 }
 
 benchmark {
     configurations {
         named("main") {
+            warmups = 1
+            iterations = 4
             iterationTime = 5
             iterationTimeUnit = "sec"
         }
