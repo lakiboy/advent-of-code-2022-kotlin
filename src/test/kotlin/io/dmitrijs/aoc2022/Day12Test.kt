@@ -23,6 +23,11 @@ internal class Day12Test {
         fun `solves problem`() {
             assertEquals(361, Day12(problemInput).puzzle1())
         }
+
+        @Test
+        fun `solves problem with modified dijkstra`() {
+            assertEquals(361, Day12(problemInput).puzzle1Dijkstra())
+        }
     }
 
     @Nested
