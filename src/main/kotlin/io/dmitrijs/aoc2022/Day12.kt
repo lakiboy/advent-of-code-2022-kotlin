@@ -25,7 +25,9 @@ class Day12(input: List<String>) {
 
     fun puzzle2() = bfs(finish, incDec = -1) { it.value == START }
 
-    fun puzzle1Dijkstra() = dijkstra(start)
+    fun puzzle1Dijkstra() = dijkstra(start, incDec = 1) { it == finish }
+
+    fun puzzle2Dijkstra() = dijkstra(finish, incDec = -1) { it.value == START }
 
     private val Point.valid get() = x >= 0 && y >= 0 && y <= grid.lastIndex && x <= grid[y].lastIndex
 
@@ -61,23 +63,23 @@ class Day12(input: List<String>) {
         return -1
     }
 
-    private fun dijkstra(root: Point): Int {
+    private fun dijkstra(root: Point, incDec: Int, done: (Point) -> Boolean): Int {
         val queue = PriorityQueue<Visit>()
         val cost = hashMapOf<Point, Int>()
 
         queue.add(Visit(root, 0))
-        cost[start] = 0
+        cost[root] = 0
 
         while (queue.isNotEmpty()) {
             val (node, distance) = queue.poll()
 
-            if (node == finish) {
+            if (done(node)) {
                 return distance
             }
 
             val newCost = cost.getValue(node) + 1
 
-            node.neighbours(incDec = 1).forEach { neighbour ->
+            node.neighbours(incDec).forEach { neighbour ->
                 if (neighbour !in cost || newCost < cost.getValue(neighbour)) {
                     cost[neighbour] = newCost
                     queue.add(Visit(neighbour, newCost))

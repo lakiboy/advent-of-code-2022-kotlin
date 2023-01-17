@@ -19,5 +19,11 @@ internal class Day12Benchmark {
     fun puzzle1Bfs() = Day12(input).puzzle1()
 
     @Benchmark
+    fun puzzle2Bfs() = Day12(input).puzzle2()
+
+    @Benchmark
     fun puzzle1Dijkstra() = Day12(input).puzzle1Dijkstra()
+
+    @Benchmark
+    fun puzzle2Dijkstra() = Day12(input).puzzle2Dijkstra()
 }
