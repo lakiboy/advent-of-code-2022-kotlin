@@ -42,5 +42,10 @@ internal class Day12Test {
         fun `solves problem`() {
             assertEquals(354, Day12(problemInput).puzzle2())
         }
+
+        @Test
+        fun `solves problem with modified dijkstra`() {
+            assertEquals(354, Day12(problemInput).puzzle2Dijkstra())
+        }
     }
 }
