@@ -1,8 +1,5 @@
 package io.dmitrijs.aoc2022
 
-import kotlin.math.absoluteValue
-import kotlin.math.sign
-
 class Day20(private val input: List<Long>) {
     fun puzzle1() = decipher()
 
@@ -25,17 +22,9 @@ class Day20(private val input: List<Long>) {
     private fun List<Number>.zeroIndex() = indexOfFirst { it.value == 0L }
 
     private fun MutableList<Number>.mix(order: Int) {
-        val index = indexOfFirst { it.order == order }
-        val value = this[index].value
-
-        val rawIndex = (index + value.sign * (value.absoluteValue % lastIndex)).toInt()
-        val newIndex = when {
-            rawIndex <= 0 -> size - (rawIndex.absoluteValue + 1)
-            rawIndex >= size -> rawIndex % size + 1
-            else -> rawIndex
-        }
-
-        add(newIndex, removeAt(index))
+        val oldIndex = indexOfFirst { it.order == order }
+        val newIndex = (oldIndex + this[oldIndex].value).mod(size - 1)
+        add(newIndex, removeAt(oldIndex))
     }
 
     private fun <T> List<T>.nth(num: Int) = this[num % size]
