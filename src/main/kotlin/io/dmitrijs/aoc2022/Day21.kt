@@ -8,45 +8,19 @@ import io.dmitrijs.aoc2022.Day21.Operation.TIMES
 class Day21(input: List<String>) {
     private val env = buildEnv(input)
 
-    private fun resolveVarsUntil(vars: Map<String, Long>, expr: Map<String, Expr>, predicate: (Map<String, Long>) -> Boolean) {
-
-    }
-
     fun puzzle1(): Long {
-        val vars = env.first.toMutableMap()
-        val expr = env.second.toMutableMap()
-
-        resolveVarsUntil(vars, expr) {
-            ROOT !in vars
-        }
-
-        while (ROOT !in vars) {
-
-            val resolvedVars = expr
-                .filterValues { it.operand1 in vars && it.operand2 in vars }
-                .mapValues { (_, op) -> op.eval(vars) }
-                .also { vars.putAll(it) }
-
-            // Cleanup expressions.
-            resolvedVars.keys.forEach { name -> expr.remove(name) }
+        val (vars, _) = resolveEnvUntil(env) { resolvedVars ->
+            ROOT !in resolvedVars
         }
 
         return vars.getValue(ROOT)
     }
 
     fun puzzle2(): Long {
-        val vars = env.first.toMutableMap().apply { remove(HUMAN) }
-        val expr = env.second.toMutableMap()
-
-        do {
-            val resolvedVars = expr
-                .filterValues { it.operand1 in vars && it.operand2 in vars }
-                .mapValues { (_, op) -> op.eval(vars) }
-                .also { vars.putAll(it) }
-
-            // Cleanup expressions.
-            resolvedVars.keys.forEach { name -> expr.remove(name) }
-        } while (resolvedVars.isNotEmpty())
+        val modifiedEnv = env.removeVar(HUMAN)
+        val (vars, expr) = resolveEnvUntil(modifiedEnv) { resolvedVars ->
+            resolvedVars.isNotEmpty()
+        }
 
         val rootExpr = expr.getValue(ROOT)
 
@@ -67,6 +41,23 @@ class Day21(input: List<String>) {
         return result
     }
 
+    private fun resolveEnvUntil(env: Environment, predicate: (Map<String, Long>) -> Boolean): Environment {
+        val vars = env.vars.toMutableMap()
+        val expr = env.expr.toMutableMap()
+
+        do {
+            val resolvedVars = expr
+                .filterValues { it.operand1 in vars && it.operand2 in vars }
+                .mapValues { (_, op) -> op.eval(vars) }
+                .also { vars.putAll(it) }
+
+            // Cleanup expressions.
+            resolvedVars.keys.forEach { name -> expr.remove(name) }
+        } while (predicate(resolvedVars))
+
+        return Environment(vars, expr)
+    }
+
     private fun Expr.eval(env: Map<String, Long>) = when (op) {
         PLUS -> env.getValue(operand1) + env.getValue(operand2)
         MINUS -> env.getValue(operand1) - env.getValue(operand2)
@@ -74,7 +65,7 @@ class Day21(input: List<String>) {
         DIV -> env.getValue(operand1) / env.getValue(operand2)
     }
 
-    private fun buildEnv(commands: List<String>): Pair<Map<String, Long>, Map<String, Expr>> {
+    private fun buildEnv(commands: List<String>): Environment {
         val vars = hashMapOf<String, Long>()
         val expr = hashMapOf<String, Expr>()
 
@@ -85,7 +76,14 @@ class Day21(input: List<String>) {
                 ?: run { expr[name] = op.toExpr() }
         }
 
-        return vars to expr
+        return Environment(vars, expr)
+    }
+
+    private data class Environment(val vars: Map<String, Long>, val expr: Map<String, Expr>) {
+        fun removeVar(name: String) = copy(
+            vars = vars.toMutableMap().apply { remove(name) },
+            expr = expr,
+        )
     }
 
     private fun String.toExpr(): Expr {
