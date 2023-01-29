@@ -3,24 +3,85 @@ package io.dmitrijs.aoc2022
 class Day17(input: String) {
     private val moves = input.trim()
 
-    fun puzzle1(): Int {
+    fun puzzle1() =
+        Board(7).apply {
+            var moveIndex = 0
+            repeat(2022) { figureIndex ->
+                moveIndex += takeTurn(figures[figureIndex % figures.size], moveIndex)
+            }
+        }.figuresHeight
+
+    fun puzzle2(): Long {
         val board = Board(7)
+        var turn = 0
+        val figuresCount = 1_000_000_000_000L
+        var figuredLeft = figuresCount
         var moveIndex = 0
+        var patternHeight = 0L
+        val patterns = hashMapOf<FigureRecord, MutableList<BoardState>>()
 
-        repeat(2022) { step ->
-            val figure = figures[step % figures.size].also { board.place(it) }
+        fun FigureRecord.capturePattern() = this in patterns && patterns.getValue(this).size >= PATTERN_SIZE
 
-            do {
-                val leftOrRight = Direction.of(moves[moveIndex])
-                moveIndex = ++moveIndex % moves.length
-                board.move(figure, leftOrRight)
-            } while (board.move(figure, Direction.DOWN))
+        do {
+            val boardState = BoardState(board.figuresHeight, turn)
+            val figureIndex = turn++ % figures.size
+            val record = FigureRecord(figureIndex, moveIndex)
 
-            board.freeze(figure)
-        }
+            patterns.computeIfAbsent(record) { mutableListOf() }.add(boardState)
 
-        return board.figuresHeight
+            if (record.capturePattern()) {
+                val pattern = patterns.getValue(record).also { println("pattern = $it") }
+                pattern
+                    .zipWithNext { a, b -> b - a }
+                    .reversed()
+                    .zipWithNext()
+                    .dropWhile { (a, b) -> a == b }
+                    .size
+                    .takeIf { pattern.size - it >= PATTERN_SIZE }
+                    ?.let { patternStart ->
+                        val start = pattern[patternStart]
+                        val cycle = (pattern[patternStart + 1] - start).also { println("cycle = $it") }
+                        val cyclesCount = (figuresCount - start.figures) / cycle.figures
+
+                        patternHeight = start.height + cyclesCount * cycle.height - board.figuresHeight
+                        figuredLeft = (figuresCount - start.figures) % cycle.figures
+
+                        patterns.clear()
+                    }
+            }
+
+            if (figuredLeft > 0) {
+                moveIndex += board.takeTurn(figures[figureIndex], moveIndex)
+                moveIndex %= moves.length
+            }
+        } while (--figuredLeft > 0)
+
+        return patternHeight + board.figuresHeight
     }
+
+    private fun Board.takeTurn(figure: Figure, moveIndex: Int): Int {
+        var height = 0
+
+        place(figure)
+
+        do {
+            val nextMove = (moveIndex + height++) % moves.length
+            move(figure, Direction.of(moves[nextMove]))
+        } while (move(figure, Direction.DOWN))
+
+        freeze(figure)
+
+        return height
+    }
+
+    private data class BoardState(val height: Int, val figures: Int) {
+        operator fun minus(other: BoardState) = copy(
+            height = height - other.height,
+            figures = figures - other.figures,
+        )
+    }
+
+    private data class FigureRecord(val figureIndex: Int, val moveIndex: Int)
 
     private class Board(private val width: Int, private val topBlankLines: Int = 3) {
         private val field = ArrayDeque<String>()
@@ -107,6 +168,7 @@ class Day17(input: String) {
     }
 
     companion object {
+        private const val PATTERN_SIZE = 3
         private const val SPACE = '.'
         private val start = Point(2, 0)
         private val figures = listOf(
