@@ -13,29 +13,21 @@ class Day18(input: List<String>) {
 
     fun puzzle2() = puzzle1() - surfaceSize(points.inner())
 
-    @Suppress("NestedBlockDepth")
     private fun Set<Point>.inner(): Set<Point> {
-        val minX = minOf { it.x }
-        val minY = minOf { it.y }
-        val minZ = minOf { it.z }
-        val maxX = maxOf { it.x }
-        val maxY = maxOf { it.y }
-        val maxZ = maxOf { it.z }
+        val xyGaps = gaps({ it.x to it.y }, { it.z }) { (x, y), z -> Point(x, y, z) }
+        val yzGaps = gaps({ it.y to it.z }, { it.x }) { (y, z), x -> Point(x, y, z) }
+        val xzGaps = gaps({ it.x to it.z }, { it.y }) { (x, z), y -> Point(x, y, z) }
 
-        val innerPoints = mutableSetOf<Point>()
+        /*
+        println("=== XY ===")
+        xyGaps.onEach { println(it) }
+        println("=== YZ ===")
+        yzGaps.onEach { println(it) }
+        println("=== XZ ===")
+        xzGaps.onEach { println(it) }
+        */
 
-        for (x in minX..maxX) {
-            for (y in minY..maxY) {
-                for (z in minZ..maxZ) {
-                    Point(x, y, z)
-                        .takeUnless { it in this }
-                        ?.takeIf { xGap(it) || yGap(it) || zGap(it) }
-                        ?.let { innerPoints.add(it) }
-                }
-            }
-        }
-
-        return innerPoints.onEach { println(it) }
+        return (xyGaps intersect yzGaps intersect xzGaps).onEach { println(it) }
     }
 
     private fun surfaceSize(items: Set<Point>) = items
@@ -44,17 +36,28 @@ class Day18(input: List<String>) {
         }
         .sumOf { commonSides -> CUBE_SIDES - commonSides }
 
-    private fun Set<Point>.xGap(other: Point) =
-        any { it.x + 1 == other.x && it.y == other.y && it.z == other.z } &&
-            any { it.x - 1 == other.x && it.y == other.y && it.z == other.z }
-
-    private fun Set<Point>.yGap(other: Point) =
-        any { it.x == other.x && it.y + 1 == other.y && it.z == other.z } &&
-            any { it.x == other.x && it.y - 1 == other.y && it.z == other.z }
-
-    private fun Set<Point>.zGap(other: Point) =
-        any { it.x == other.x && it.y == other.y && it.z + 1 == other.z } &&
-            any { it.x == other.x && it.y == other.y && it.z - 1 == other.z }
+    private fun Set<Point>.gaps(
+        keySelector: (Point) -> Pair<Int, Int>,
+        transform: (Point) -> Int,
+        factory: (Pair<Int, Int>, Int) -> Point
+    ): Set<Point> {
+        return groupBy(keySelector)
+            .filterValues { points -> points.size > 1 }
+            .mapValues { (_, points) ->
+                points
+                    .map(transform)
+                    .sorted()
+                    .zipWithNext { a, b -> if (a + 1 != b) (a + 1) until b else null }
+                    .filterNotNull()
+            }
+            .filterValues { points -> points.isNotEmpty() }
+            .flatMap { (key, items) ->
+                items.flatMap { range ->
+                    range.map { factory(key, it) }
+                }
+            }
+            .toSet()
+    }
 
     private data class Point(val x: Int, val y: Int, val z: Int) {
         fun connectedTo(other: Point) =
