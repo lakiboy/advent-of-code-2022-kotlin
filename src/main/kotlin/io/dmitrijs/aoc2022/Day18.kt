@@ -11,9 +11,10 @@ class Day18(input: List<String>) {
 
     fun puzzle1() = surfaceSize(points)
 
-    fun puzzle2() = puzzle1() - surfaceSize(points.innerList())
+    fun puzzle2() = puzzle1() - surfaceSize(points.inner())
 
-    private fun Set<Point>.innerList(): Set<Point> {
+    @Suppress("NestedBlockDepth")
+    private fun Set<Point>.inner(): Set<Point> {
         val minX = minOf { it.x }
         val minY = minOf { it.y }
         val minZ = minOf { it.z }
@@ -21,17 +22,20 @@ class Day18(input: List<String>) {
         val maxY = maxOf { it.y }
         val maxZ = maxOf { it.z }
 
+        val innerPoints = mutableSetOf<Point>()
+
         for (x in minX..maxX) {
             for (y in minY..maxY) {
                 for (z in minZ..maxZ) {
-                    Point(x, y, z).takeUnless { it in this }?.also { println(it) }
+                    Point(x, y, z)
+                        .takeUnless { it in this }
+                        ?.takeIf { xGap(it) || yGap(it) || zGap(it) }
+                        ?.let { innerPoints.add(it) }
                 }
             }
         }
 
-        return setOf(
-            Point(x = 2, y = 2, z = 5)
-        )
+        return innerPoints.onEach { println(it) }
     }
 
     private fun surfaceSize(items: Set<Point>) = items
@@ -40,7 +44,19 @@ class Day18(input: List<String>) {
         }
         .sumOf { commonSides -> CUBE_SIDES - commonSides }
 
-    private data class Point(val x: Int, val y: Int, val z: Int) : Comparable<Point> {
+    private fun Set<Point>.xGap(other: Point) =
+        any { it.x + 1 == other.x && it.y == other.y && it.z == other.z } &&
+            any { it.x - 1 == other.x && it.y == other.y && it.z == other.z }
+
+    private fun Set<Point>.yGap(other: Point) =
+        any { it.x == other.x && it.y + 1 == other.y && it.z == other.z } &&
+            any { it.x == other.x && it.y - 1 == other.y && it.z == other.z }
+
+    private fun Set<Point>.zGap(other: Point) =
+        any { it.x == other.x && it.y == other.y && it.z + 1 == other.z } &&
+            any { it.x == other.x && it.y == other.y && it.z - 1 == other.z }
+
+    private data class Point(val x: Int, val y: Int, val z: Int) {
         fun connectedTo(other: Point) =
             sides(other).count { (a, b) -> a == b } == 2 && sides(other).any { (a, b) -> (a - b).absoluteValue == 1 }
 
@@ -49,9 +65,6 @@ class Day18(input: List<String>) {
             y to other.y,
             z to other.z,
         )
-
-        override fun compareTo(other: Point) =
-            sides(other).firstOrNull { (a, b) -> a != b }?.let { (a, b) -> a - b } ?: 0
     }
 
     companion object {
