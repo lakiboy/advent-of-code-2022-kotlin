@@ -13,62 +13,65 @@ class Day18(input: List<String>) {
 
     fun puzzle2() = puzzle1() - surfaceSize(points.gaps())
 
-    private fun Set<Point3d>.gaps(): Set<Point3d> {
-        val xyGaps = flatGaps({ it.z }) { Point(it.x, it.y) }
-        val yzGaps = flatGaps({ it.x }) { Point(it.y, it.z) }.map { Point3d(it.z, it.x, it.y) }.toSet()
-        val xzGaps = flatGaps({ it.y }) { Point(it.x, it.z) }.map { Point3d(it.x, it.z, it.y) }.toSet()
-
-        return (xyGaps intersect yzGaps intersect xzGaps)
-    }
-
     private fun surfaceSize(items: Set<Point3d>) = items
         .map { point ->
             items.count { adjacent -> adjacent.connectedTo(point) }
         }
         .sumOf { commonSides -> CUBE_SIDES - commonSides }
 
-    private fun Set<Point3d>.flatGaps(keySelector: (Point3d) -> Int, transform: (Point3d) -> Point) =
-        groupBy(keySelector, transform).flatMap { (z, flat) ->
-            val minX = flat.minOf { it.x }
-            val maxX = flat.maxOf { it.x }
-            val minY = flat.minOf { it.y }
-            val maxY = flat.maxOf { it.y }
+    private fun Set<Point3d>.gaps(): Set<Point3d> {
+        val minX = minOf { it.x }
+        val maxX = maxOf { it.x }
+        val minY = minOf { it.y }
+        val maxY = maxOf { it.y }
+        val minZ = minOf { it.z }
+        val maxZ = maxOf { it.z }
+        val lava = this
 
-            fun Point.edge() = x <= minX || x >= maxX || y <= minY || y >= maxY
+        fun Point3d.lava() = this in lava
 
-            fun Point.blocked(): Boolean {
-                val queue = ArrayDeque<Point>()
-                val visited = hashSetOf<Point>()
+        fun Point3d.edge() = x <= minX || x >= maxX || y <= minY || y >= maxY || z <= minZ || z >= maxZ
 
-                queue.add(this)
-                visited.add(this)
+        fun Point3d.blocked(): Boolean {
+            val queue = ArrayDeque<Pair<Point3d, List<Point3d>>>()
+            val visited = hashSetOf<Point3d>()
 
-                while (queue.isNotEmpty()) {
-                    val node = queue.removeFirst()
+            queue.add(this to emptyList())
+            visited.add(this)
 
-                    if (node.edge()) {
-                        return false
-                    }
+            while (queue.isNotEmpty()) {
+                val (node, path) = queue.removeFirst()
 
-                    neighbours().filterNot { it in flat }.filterNot { it in visited }.forEach {
-                        visited.add(it)
-                        queue.add(it)
-                    }
+                if (node.edge()) {
+                    return false
                 }
 
-                return true
+                node.neighbours().filterNot { it.lava() || it in visited }.forEach {
+                    queue.add(it to (path + it))
+                    visited.add(it)
+                }
             }
 
-            (minX..maxX)
-                .flatMap { x -> (minY..maxY).map { y -> Point(x, y) } }
-                .filterNot { it in flat || it.edge() }
-                .filter { it.blocked() }
-                .map { point -> point.to3d(z) }
-        }.toSet()
+            return true
+        }
 
-    private fun Point.to3d(z: Int) = Point3d(x, y, z)
+        return (minX..maxX)
+            .flatMap { x ->
+                (minY..maxY).flatMap { y ->
+                    (minZ..maxZ).map { z ->
+                        Point3d(x, y, z)
+                    }
+                }.filterNot { it.lava() || it.edge() }.filter { it.blocked() }
+            }.toSet()
+    }
 
-    private fun Point.neighbours() = Direction.values().map { this + it }
+    private fun Point3d.neighbours() = Direction.values().map { direction ->
+        copy(
+            x = x + direction.move.x,
+            y = y + direction.move.y,
+            z = z + direction.move.z,
+        )
+    }
 
     private data class Point3d(val x: Int, val y: Int, val z: Int) {
         fun connectedTo(other: Point3d) =
@@ -79,6 +82,15 @@ class Day18(input: List<String>) {
             y to other.y,
             z to other.z,
         )
+    }
+
+    private enum class Direction(val move: Point3d) {
+        UP(move = Point3d(0, -1, 0)),
+        DOWN(move = Point3d(0, 1, 0)),
+        LEFT(move = Point3d(-1, 0, 0)),
+        RIGHT(move = Point3d(1, 0, 0)),
+        TOP(move = Point3d(0, 0, -1)),
+        BOTTOM(move = Point3d(0, 0, 1));
     }
 
     companion object {

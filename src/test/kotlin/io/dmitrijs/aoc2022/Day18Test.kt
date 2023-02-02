@@ -35,7 +35,7 @@ internal class Day18Test {
 
         @Test
         fun `solves problem`() {
-            assertEquals(2_492, Day18(problemInput).puzzle2())
+            assertEquals(2_508, Day18(problemInput).puzzle2())
         }
     }
 }
