@@ -2,7 +2,8 @@
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/lakiboy/advent-of-code-2022-kotlin.svg?style=svg&circle-token=0104223da0789fd7cbd9f2a2d030f91c76845550)](https://dl.circleci.com/status-badge/redirect/gh/lakiboy/advent-of-code-2022-kotlin/tree/main)
 
-My solutions (WIP) for the [Advent of Code 2022](https://adventofcode.com/2022) puzzles in [Kotlin](https://kotlinlang.org).
+My solutions (WIP) for the [Advent of Code 2022](https://adventofcode.com/2022) puzzles
+in [Kotlin](https://kotlinlang.org).
 
 The ultimate goal:
 
@@ -34,3 +35,4 @@ The ultimate goal:
 | 18  | Boiling Boulders         | [Docs](https://adventofcode.com/2022/day/18) | [Text](src/main/resources/day18.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day18.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day18Test.kt) |
 | 20  | Grove Positioning System | [Docs](https://adventofcode.com/2022/day/20) | [Text](src/main/resources/day20.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day20.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day20Test.kt) |
 | 21  | Monkey Math              | [Docs](https://adventofcode.com/2022/day/21) | [Text](src/main/resources/day21.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day21.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day21Test.kt) |
+| 22  | Monkey Map               | [Docs](https://adventofcode.com/2022/day/22) | [Text](src/main/resources/day22.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day22.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day22Test.kt) |
