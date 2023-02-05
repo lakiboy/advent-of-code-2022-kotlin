@@ -11,6 +11,17 @@ data class Point(val x: Int, val y: Int) {
 
     fun distanceTo(other: Point) = (x - other.x).absoluteValue + (y - other.y).absoluteValue
 
+    fun neighbours() = setOf(
+        copy(y = y - 1),
+        copy(x = x + 1, y = y - 1),
+        copy(x = x + 1),
+        copy(x = x + 1, y = y + 1),
+        copy(y = y + 1),
+        copy(x = x - 1, y = y + 1),
+        copy(x = x - 1),
+        copy(x = x - 1, y = y - 1),
+    )
+
     companion object {
         fun of(s: String) = Point(
             s.substringBefore(",").toInt(),
