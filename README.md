@@ -36,3 +36,4 @@ The ultimate goal:
 | 20  | Grove Positioning System | [Docs](https://adventofcode.com/2022/day/20) | [Text](src/main/resources/day20.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day20.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day20Test.kt) |
 | 21  | Monkey Math              | [Docs](https://adventofcode.com/2022/day/21) | [Text](src/main/resources/day21.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day21.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day21Test.kt) |
 | 22  | Monkey Map               | [Docs](https://adventofcode.com/2022/day/22) | [Text](src/main/resources/day22.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day22.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day22Test.kt) |
+| 23  | Unstable Diffusion       | [Docs](https://adventofcode.com/2022/day/23) | [Text](src/main/resources/day23.txt) | [Source](src/main/kotlin/io/dmitrijs/aoc2022/Day23.kt) | [Test](src/test/kotlin/io/dmitrijs/aoc2022/Day23Test.kt) |
