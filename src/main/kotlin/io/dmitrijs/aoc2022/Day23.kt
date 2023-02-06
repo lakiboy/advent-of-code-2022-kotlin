@@ -21,7 +21,7 @@ class Day23(input: List<String>) {
     }
 
     private class Grid(input: List<Point>) {
-        private var elves = input.toSet()
+        private val elves = input.toMutableSet()
         private var sides = Direction.values().toList()
 
         val emptyTiles get(): Int {
@@ -49,8 +49,14 @@ class Day23(input: List<String>) {
             val old = moving.values.toSet()
             val new = moving.keys
 
-            elves = elves - old + new
+            elves.apply {
+                removeAll(old)
+                addAll(new)
+            }
             sides = sides.drop(1) + sides.first()
+
+            // Alternatively can be immutable, but mutable structure is faster.
+            // elves = elves - old + new
 
             return new.size
         }
