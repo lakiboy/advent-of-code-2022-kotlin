@@ -1,6 +1,5 @@
 package io.dmitrijs.aoc2022
 
-import kotlin.math.absoluteValue
 import kotlin.math.pow
 
 class Day25(private val input: List<String>) {
@@ -20,7 +19,7 @@ class Day25(private val input: List<String>) {
             } else {
                 add(decToSnafu.getValue(rem))
             }
-        } while (num.absoluteValue > 0)
+        } while (num > 0)
     }.reversed().joinToString("")
 
     private fun String.toDec() = indices.fold(0L) { acc, power ->
