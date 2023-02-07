@@ -21,7 +21,21 @@ internal class Day24Test {
 
         @Test
         fun `solves problem`() {
-            assertEquals(437, Day24(problemInput).puzzle1())
+            assertEquals(311, Day24(problemInput).puzzle1())
+        }
+    }
+
+    @Nested
+    @DisplayName("Puzzle 2")
+    inner class Puzzle2 {
+        @Test
+        fun `solves example`() {
+            assertEquals(54, Day24(exampleInput).puzzle2())
+        }
+
+        @Test
+        fun `solves problem`() {
+            assertEquals(869, Day24(problemInput).puzzle2())
         }
     }
 }

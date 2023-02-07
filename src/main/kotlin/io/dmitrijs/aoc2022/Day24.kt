@@ -7,96 +7,92 @@ import io.dmitrijs.aoc2022.Direction.UP
 
 class Day24(input: List<String>) {
     private val grid = input.drop(1).dropLast(1).map { it.drop(1).dropLast(1) }
+    private val maxX = grid.first().length - 1
+    private val maxY = grid.size - 1
+    private val loop = Pair(maxX + 1, maxY + 1).lcm()
 
-    fun puzzle1() = Valley(grid).simulate()
+    private val blizzardsInTime = blizzardPositions(loop)
 
-    private class Valley(grid: List<String>) {
-        private var blizzards: Map<Point, Set<Direction>> =
-            grid.flatMapIndexed { y, line ->
-                line.mapIndexedNotNull { x, symbol ->
-                    symbol.takeUnless { it == SPACE }?.let {
-                        Point(x, y) to Direction.of(it)
-                    }
-                }
-            }.toPointsMap()
-        private val maxX = grid.first().length - 1
-        private val maxY = grid.size - 1
-        private val goal = Point(maxX, maxY)
+    fun puzzle1() = run(Point(0, -1).inTime(0), Point(maxX, maxY))
 
-        fun simulate(): Int {
-            val start = Point(0, 0)
-            val queue = ArrayDeque<Point>().apply { add(start) }
-            var moves = 1
+    fun puzzle2(): Int {
+        val t1 = run(Point(0, -1).inTime(0), Point(maxX, maxY))
+        val t2 = run(Point(maxX, maxY + 1).inTime(t1), Point(0, 0))
+        val t3 = run(Point(0, -1).inTime(t1 + t2), Point(maxX, maxY))
 
-            while (queue.isNotEmpty()) {
-                blizzards = blizzards.move()
-                val point = queue.firstOrNull { it !in blizzards }
+        return t1 + t2 + t3
+    }
 
-                if (point == goal) {
-                    return ++moves
-                }
+    private fun run(start: PointInTime, goal: Point): Int {
+        val queue = ArrayDeque(listOf(start to 0))
+        val visited = hashSetOf<PointInTime>()
 
-                if (point != null) {
-                    queue.clear()
-                    queue.addAll(
-                        point.orthogonalNeighbours()
-                            .filterNot { it.outOfBounds }
-                            .sortedBy { it.distanceTo(goal) }
-                    )
-                }
+        while (queue.isNotEmpty()) {
+            val (pit, taken) = queue.removeFirst()
+            val (expedition, time) = pit
 
-                moves++
+            if (expedition == goal) {
+                return taken + 1
             }
 
-            return -1
-        }
+            val positions = expedition.orthogonalNeighbours().filterNot { it.outOfBounds }
 
-        override fun toString() =
-            (0..maxY).joinToString("\n") { y ->
-                (0..maxX).map { x ->
-                    val p = Point(x, y)
-                    val v = blizzards.getOrDefault(p, emptySet())
-                    when {
-                        v.isEmpty() -> '.'
-                        v.size == 1 -> when (v.single()) {
-                            RIGHT -> '>'
-                            LEFT -> '<'
-                            DOWN -> 'v'
-                            UP -> '^'
-                        }
-                        else -> v.size
-                    }
-                }.joinToString("")
-            }
-
-        private fun List<Pair<Point, Direction>>.toPointsMap() =
-            groupBy({ it.first }) { it.second }.mapValues { (_, directions) -> directions.toSet() }
-
-        private fun Map<Point, Set<Direction>>.move() =
-            flatMap { (point, directions) ->
-                directions.map { direction ->
-                    (point + direction).wrap() to direction
+            (positions + expedition)
+                .map { it.inTime(time + 1) }
+                .filterNot { it in visited || it in blizzardsInTime }
+                .forEach {
+                    visited.add(it)
+                    queue.add(it to taken + 1)
                 }
-            }.toPointsMap()
-
-        private val Point.outOfBounds get() = x < 0 || y < 0 || x > maxX || y > maxY
-
-        private fun Point.wrap() = when {
-            x < 0 -> copy(x = maxX)
-            x > maxX -> copy(x = 0)
-            y < 0 -> copy(y = maxY)
-            y > maxY -> copy(y = 0)
-            else -> this
         }
 
-        private fun Direction.Companion.of(symbol: Char) = when (symbol) {
-            '>' -> RIGHT
-            '<' -> LEFT
-            'v' -> DOWN
-            '^' -> UP
-            else -> error("Unsupported direction symbol: $symbol.")
+        return -1
+    }
+
+    private fun blizzardPositions(t: Int) = grid.flatMapIndexed { y, line ->
+        line.mapIndexedNotNull { x, symbol ->
+            symbol.takeUnless { it == SPACE }?.let {
+                var p = Point(x, y)
+                val d = Direction.of(it)
+                (0..t).map { time ->
+                    PointInTime(p, time).also { p = (p + d).wrap() }
+                }
+            }
+        }.flatten()
+    }.toSet()
+
+    private fun Pair<Int, Int>.lcm(): Int {
+        var lcm = if (first > second) first else second
+
+        while (true) {
+            if (lcm % first == 0 && lcm % second == 0) {
+                return lcm
+            }
+            lcm++
         }
     }
+
+    private fun Point.wrap() = when {
+        x < 0 -> copy(x = maxX)
+        x > maxX -> copy(x = 0)
+        y < 0 -> copy(y = maxY)
+        y > maxY -> copy(y = 0)
+        else -> this
+    }
+
+    private val Point.outOfBounds get() = x < 0 || y < 0 || x > maxX || y > maxY
+
+    private fun Point.inTime(t: Int) = PointInTime(this, t % loop)
+
+    private fun Direction.Companion.of(symbol: Char) = when (symbol) {
+        '>' -> RIGHT
+        '<' -> LEFT
+        'v' -> DOWN
+        '^' -> UP
+        else -> error("Unsupported direction symbol: $symbol.")
+    }
+
+    private data class PointInTime(val p: Point, val t: Int)
 
     private companion object {
         const val SPACE = '.'
