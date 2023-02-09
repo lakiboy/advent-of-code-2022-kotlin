@@ -22,6 +22,13 @@ data class Point(val x: Int, val y: Int) {
         copy(x = x - 1, y = y - 1),
     )
 
+    fun orthogonalNeighbours() = setOf(
+        copy(x = x - 1),
+        copy(x = x + 1),
+        copy(y = y - 1),
+        copy(y = y + 1),
+    )
+
     companion object {
         fun of(s: String) = Point(
             s.substringBefore(",").toInt(),
