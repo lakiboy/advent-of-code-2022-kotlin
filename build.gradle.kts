@@ -6,8 +6,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val benchmarksSrc = "src/benchmarks/kotlin"
 
 plugins {
-    kotlin("jvm") version "1.7.22"
-    kotlin("plugin.allopen") version "1.7.22"
+    kotlin("jvm") version "1.8.10"
+    kotlin("plugin.allopen") version "1.8.10"
     id("org.jetbrains.kotlinx.benchmark") version "0.4.7"
     id("io.gitlab.arturbosch.detekt") version "1.22.0"
 }
@@ -35,7 +35,7 @@ dependencies {
 tasks {
     withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_17.toString()
+            jvmTarget = JavaVersion.VERSION_19.toString()
         }
     }
     test {
