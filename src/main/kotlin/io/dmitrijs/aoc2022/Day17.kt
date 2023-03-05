@@ -30,7 +30,7 @@ class Day17(input: String) {
             patterns.computeIfAbsent(record) { mutableListOf() }.add(boardState)
 
             if (record.capturePattern()) {
-                val pattern = patterns.getValue(record).also { println("pattern = $it") }
+                val pattern = patterns.getValue(record)
                 pattern
                     .zipWithNext { a, b -> b - a }
                     .reversed()
@@ -40,7 +40,7 @@ class Day17(input: String) {
                     .takeIf { pattern.size - it >= PATTERN_SIZE }
                     ?.let { patternStart ->
                         val start = pattern[patternStart]
-                        val cycle = (pattern[patternStart + 1] - start).also { println("cycle = $it") }
+                        val cycle = (pattern[patternStart + 1] - start)
                         val cyclesCount = (figuresCount - start.figures) / cycle.figures
 
                         patternHeight = start.height + cyclesCount * cycle.height - board.figuresHeight
