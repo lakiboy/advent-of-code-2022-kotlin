@@ -1,4 +1,4 @@
 .gradle
-.idea
-build
-/bin
+build/
+!gradle/wrapper/gradle-wrapper.jar
+src/main/resources/*

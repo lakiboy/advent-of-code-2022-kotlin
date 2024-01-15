@@ -1,19 +1,29 @@
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension.Companion.DEFAULT_SRC_DIR_KOTLIN
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension.Companion.DEFAULT_TEST_SRC_DIR_KOTLIN
 import kotlinx.benchmark.gradle.JvmBenchmarkTarget
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val benchmarksSrc = "src/benchmarks/kotlin"
 
 plugins {
-    kotlin("jvm") version "1.8.10"
-    kotlin("plugin.allopen") version "1.8.10"
-    id("org.jetbrains.kotlinx.benchmark") version "0.4.7"
-    id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    kotlin("jvm") version "1.9.21"
+    kotlin("plugin.allopen") version "1.9.21"
+
+    id("org.jetbrains.kotlinx.benchmark") version "0.4.10"
+    id("io.gitlab.arturbosch.detekt") version "1.23.4"
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.10")
+    testImplementation(kotlin("test"))
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.4")
 }
 
 kotlin {
@@ -26,20 +36,21 @@ kotlin {
     }
 }
 
-dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.7")
-    testImplementation(kotlin("test"))
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
 }
 
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_19.toString()
-        }
+tasks.withType<KotlinCompile> {
+    compilerOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-opt-in=kotlin.ExperimentalStdlibApi")
+        jvmTarget = JvmTarget.JVM_21
+        languageVersion = KotlinVersion.KOTLIN_1_9
     }
-    test {
-        useJUnitPlatform()
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform {
+        excludeTags = setOf(getProperty("TEST_IGNORE_TAG", "playground"))
     }
 }
 
@@ -48,12 +59,14 @@ allOpen {
 }
 
 detekt {
-    config = files("detekt-config.yml")
+    config.from(files("detekt-config.yml"))
     buildUponDefaultConfig = true
-    source = objects.fileCollection().from(
-        DEFAULT_SRC_DIR_KOTLIN,
-        DEFAULT_TEST_SRC_DIR_KOTLIN,
-        benchmarksSrc
+    source.from(
+        objects.fileCollection().from(
+            DEFAULT_SRC_DIR_KOTLIN,
+            DEFAULT_TEST_SRC_DIR_KOTLIN,
+            benchmarksSrc
+        )
     )
 }
 
@@ -73,3 +86,5 @@ benchmark {
         }
     }
 }
+
+fun getProperty(key: String, default: String = ""): String = System.getenv(key) ?: default
