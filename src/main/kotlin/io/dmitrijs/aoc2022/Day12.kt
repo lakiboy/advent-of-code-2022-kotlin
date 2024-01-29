@@ -90,29 +90,27 @@ class Day12(input: List<String>) {
         return -1
     }
 
-    /*
-    private fun greedyBfs(root: Point): Int {
-        val queue = PriorityQueue<Visit>()
-        val visited = mutableSetOf<Point>()
-
-        queue.add(Visit(root, 0, root.distanceTo(finish)))
-
-        while (queue.isNotEmpty()) {
-            val (node, distance) = queue.poll()
-
-            if (node == finish) {
-                return distance
-            }
-
-            node.neighbours(incDec = 1).filter { it !in visited }.forEach { neighbour ->
-                queue.add(Visit(neighbour, distance + 1, neighbour.distanceTo(finish)))
-                visited.add(neighbour)
-            }
-        }
-
-        return -1
-    }
-    */
+//    private fun greedyBfs(root: Point): Int {
+//        val queue = PriorityQueue<Visit>()
+//        val visited = mutableSetOf<Point>()
+//
+//        queue.add(Visit(root, 0, root.distanceTo(finish)))
+//
+//        while (queue.isNotEmpty()) {
+//            val (node, distance) = queue.poll()
+//
+//            if (node == finish) {
+//                return distance
+//            }
+//
+//            node.neighbours(incDec = 1).filter { it !in visited }.forEach { neighbour ->
+//                queue.add(Visit(neighbour, distance + 1, neighbour.distanceTo(finish)))
+//                visited.add(neighbour)
+//            }
+//        }
+//
+//        return -1
+//    }
 
     private data class Visit(val p: Point, val d: Int) : Comparable<Visit> {
         override fun compareTo(other: Visit) = d.compareTo(other.d)

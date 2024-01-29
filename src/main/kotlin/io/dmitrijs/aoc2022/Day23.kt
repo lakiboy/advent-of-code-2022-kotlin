@@ -71,7 +71,7 @@ class Day23(input: List<String>) {
         N(listOf(Point(0, -1), Point(-1, -1), Point(1, -1))),
         S(listOf(Point(0, 1), Point(-1, 1), Point(1, 1))),
         W(listOf(Point(-1, 0), Point(-1, -1), Point(-1, 1))),
-        E(listOf(Point(1, 0), Point(1, -1), Point(1, 1)));
+        E(listOf(Point(1, 0), Point(1, -1), Point(1, 1)))
     }
 
     companion object {

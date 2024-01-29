@@ -3,64 +3,61 @@ package io.dmitrijs.aoc2022
 import io.dmitrijs.aoc2022.Resources.resourceAsLines
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Tag
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @DisplayName("Day 9")
 internal class Day09Test {
-    private val problemInput = resourceAsLines("day09")
-    private val exampleInput = """
-        R 4
-        U 4
-        L 3
-        D 1
-        R 4
-        D 1
-        L 5
-        R 2
-    """.trimIndent().lines()
-
     @Nested
-    @DisplayName("Puzzle 1")
-    inner class Puzzle1 {
+    inner class Example {
+        private val exampleInput1 = """
+            R 4
+            U 4
+            L 3
+            D 1
+            R 4
+            D 1
+            L 5
+            R 2
+        """.trimIndent().lines()
+
+        private val exampleInput2 = """
+            R 5
+            U 8
+            L 8
+            D 3
+            R 17
+            D 10
+            L 25
+            U 20
+        """.trimIndent().lines()
+
         @Test
-        fun `solves example`() {
-            assertEquals(13, Day09(exampleInput).puzzle1())
+        fun puzzle1() {
+            assertEquals(13, Day09(exampleInput1).puzzle1())
         }
 
         @Test
-        fun `solves problem`() {
-            assertEquals(6_503, Day09(problemInput).puzzle1())
+        fun puzzle2() {
+            assertEquals(1, Day09(exampleInput1).puzzle2())
+            assertEquals(36, Day09(exampleInput2).puzzle2())
         }
     }
 
     @Nested
-    @DisplayName("Puzzle 2")
-    inner class Puzzle2 {
+    @Tag("personal")
+    inner class Problem {
+        private val day = Day09(resourceAsLines("day09"))
+
         @Test
-        fun `solves example`() {
-            assertEquals(1, Day09(exampleInput).puzzle2())
+        fun puzzle1() {
+            assertEquals(6_503, day.puzzle1())
         }
 
         @Test
-        fun `solves example2`() {
-            val exampleInput = """
-                R 5
-                U 8
-                L 8
-                D 3
-                R 17
-                D 10
-                L 25
-                U 20
-            """.trimIndent().lines()
-
-            assertEquals(36, Day09(exampleInput).puzzle2())
-        }
-
-        @Test
-        fun `solves problem`() {
-            assertEquals(2_724, Day09(problemInput).puzzle2())
+        fun puzzle2() {
+            assertEquals(2_724, day.puzzle2())
         }
     }
 }
