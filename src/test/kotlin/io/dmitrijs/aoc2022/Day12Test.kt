@@ -3,49 +3,42 @@ package io.dmitrijs.aoc2022
 import io.dmitrijs.aoc2022.Resources.resourceAsLines
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Tag
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @DisplayName("Day 12")
 internal class Day12Test {
-    private val exampleInput = resourceAsLines("day12_example")
-    private val problemInput = resourceAsLines("day12")
-
     @Nested
-    @DisplayName("Puzzle 1")
-    inner class Puzzle1 {
+    inner class Example {
+        private val day = Day12(resourceAsLines("day12_example"))
+
         @Test
-        fun `solves example`() {
-            assertEquals(31, Day12(exampleInput).puzzle1())
+        fun puzzle1() {
+            assertEquals(31, day.puzzle1())
         }
 
         @Test
-        fun `solves problem`() {
-            assertEquals(361, Day12(problemInput).puzzle1())
-        }
-
-        @Test
-        fun `solves problem with modified dijkstra`() {
-            assertEquals(361, Day12(problemInput).puzzle1Dijkstra())
+        fun puzzle2() {
+            assertEquals(29, day.puzzle2())
         }
     }
 
     @Nested
-    @DisplayName("Puzzle 2")
-    inner class Puzzle2 {
+    @Tag("personal")
+    inner class Problem {
+        private val day = Day12(resourceAsLines("day12"))
+
         @Test
-        fun `solves example`() {
-            assertEquals(29, Day12(exampleInput).puzzle2())
+        fun puzzle1() {
+            assertEquals(361, day.puzzle1())
+            assertEquals(361, day.puzzle1Dijkstra())
         }
 
         @Test
-        fun `solves problem`() {
-            assertEquals(354, Day12(problemInput).puzzle2())
-        }
-
-        @Test
-        fun `solves problem with modified dijkstra`() {
-            assertEquals(354, Day12(problemInput).puzzle2Dijkstra())
+        fun puzzle2() {
+            assertEquals(354, day.puzzle2())
+            assertEquals(354, day.puzzle2Dijkstra())
         }
     }
 }
